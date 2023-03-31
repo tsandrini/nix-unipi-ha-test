@@ -23,21 +23,6 @@
   # ----------------------------
   home-manager.users.${user} = { home.packages = with pkgs; [ ]; };
 
-  boot = {
-    kernelPackages = pkgs.linuxPackages_rpi4;
-    kernelParams = [
-      "8250.nr_uarts=1"
-      "console=ttyAMA0,115200"
-      "console=tty1"
-      "cma=128M"
-    ];
-  };
-
-  boot.loader.raspberryPi = {
-    enable = true;
-    version = 4;
-  };
-  boot.loader.grub.enable = false;
   hardware.enableRedistributableFirmware = true;
 
   services.openssh = {
