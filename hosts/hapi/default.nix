@@ -10,7 +10,7 @@
   imports = with inputs.self; [
     ./hardware-configuration.nix
     nixosRoles.base
-    # inputs.nixos-hardware.nixosModules.rasp
+    inputs.nixos-hardware.nixosModules.raspberry-pi-4
   ];
 
   # ------------------------------
@@ -23,6 +23,23 @@
   # ----------------------------
   home-manager.users.${user} = { home.packages = with pkgs; [ ]; };
 
+  boot = {
+    kernelPackages = pkgs.linuxPackages_rpi4;
+    kernelParams = [
+      "8250.nr_uarts=1"
+      "console=ttyAMA0,115200"
+      "console=tty1"
+      "cma=128M"
+    ];
+  };
+
+  boot.loader.raspberryPi = {
+    enable = true;
+    version = 4;
+  };
+  boot.loader.grub.enable = false;
+  hardware.enableRedistributableFirmware = true;
+
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = true;
@@ -31,7 +48,7 @@
   programs.ssh.startAgent = true;
   services.home-assistant = {
     enable = true;
-    port = 8123;
+    # port = 8123;
     extraComponents = [
       "met"
       "radio_browser"
