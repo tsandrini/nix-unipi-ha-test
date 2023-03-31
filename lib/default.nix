@@ -1,0 +1,8 @@
+{
+  inputs,
+  lib,
+  nixpkgs,
+  user,
+  ...
+}: {
+}

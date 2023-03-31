@@ -8,7 +8,7 @@
   # | ROLES & MODULES & etc. |
   # --------------------------
   imports = with inputs.self; [
-    # ./hardware-configuration.nix
+    ./hardware-configuration.nix
     nixosRoles.base
     # inputs.nixos-hardware.nixosModules.rasp
   ];
