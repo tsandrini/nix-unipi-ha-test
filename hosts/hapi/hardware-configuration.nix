@@ -13,13 +13,13 @@
   # boot.supportedFilesystems = [ "zfs" ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS_SD";
+    device = "/dev/disk/by-label/root";
     fsType = "ext4";
     options = [ "noatime" ];
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-label/FIRMWARE";
+    device = "/dev/disk/by-label/boot";
     fsType = "vfat";
   };
 
