@@ -1,48 +1,40 @@
-{ config, pkgs, inputs, user, lib, system, ... }: {
+{ config, pkgs, lib, ... }: {
+  # -----------------
+  # | SPECIFICATION |
+  # -----------------
+  # Model: Lenovo B51-80
+
   # --------------------------
   # | ROLES & MODULES & etc. |
   # --------------------------
-  imports = with inputs.self; [
+  imports = [
     ./hardware-configuration.nix
-    inputs.nixos-hardware.nixosModules.raspberry-pi-4
+    "${fetchTarball "https://github.com/NixOS/nixos-hardware/archive/936e4649098d6a5e0762058cb7687be1b2d90550.tar.gz" }/raspberry-pi/4"
   ];
 
   # ------------------------------
   # | ADDITIONAL SYSTEM PACKAGES |
   # ------------------------------
-  environment.systemPackages = with pkgs; [ ];
+  environment.systemPackages = with pkgs; [
+    git
+    curl
+    wget
+    htop
+    openssl
+    vim
+    exfat
+    dosfstools
+    exfatprogs
+    udisks
+    pciutils
+    usbutils
+  ];
 
-  # ----------------------------
-  # | ADDITIONAL USER PACKAGES |
-  # ----------------------------
-  home-manager.users.${user} = { home.packages = with pkgs; [ ]; };
-
-  # hardware.enableRedistributableFirmware = true;
-
+  hardware.enableRedistributableFirmware = true;
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = true;
   };
 
   programs.ssh.startAgent = true;
-  # services.home-assistant = {
-  #   enable = true;
-  #   # port = 8123;
-  #   extraComponents = [
-  #     "met"
-  #     "radio_browser"
-  #   ];
-  #   config = {
-  #     default_config = {};
-  #     frontend = { };
-  #     http = {
-  #       use_x_forwarded_for = true;
-  #       trusted_proxies = [
-  #         "127.0.0.1"
-  #         "::1"
-  #       ];
-  #     };
-  #   };
-  # };
-
 }
