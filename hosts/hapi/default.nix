@@ -23,7 +23,7 @@
   # ----------------------------
   home-manager.users.${user} = { home.packages = with pkgs; [ ]; };
 
-  hardware.enableRedistributableFirmware = true;
+  # hardware.enableRedistributableFirmware = true;
 
   services.openssh = {
     enable = true;

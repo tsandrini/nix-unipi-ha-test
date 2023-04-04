@@ -18,11 +18,11 @@
     # ------------
     # | PROFILES |
     # ------------
-    nixosProfiles.tty
-    nixosProfiles.system-maintenance
+    # nixosProfiles.tty
+    # nixosProfiles.system-maintenance
     nixosProfiles.system-packages
-    nixosProfiles.localization
-    nixosProfiles.networking-nm
+    # nixosProfiles.localization
+    # nixosProfiles.networking-nm
     nixosProfiles.home-manager
   ];
 }
