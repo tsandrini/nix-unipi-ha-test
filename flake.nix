@@ -73,17 +73,45 @@
         modules = [
           inputs.nixos-hardware.nixosModules.raspberry-pi-4
           ({config, pkgs, ...}: {
+
             sdImage.compressImage = false;
             sdImage.firmwareSize = 2048;
 
             system.stateVersion = "23.05";
 
+            users.users.root.hashedPassword = "$6$7xwkdwWxSmBb5FYb$ZXtCEptSRyn8OWFBsOuT7tpw6UuJTq2MSE2RNEkjUoKZn0FBJ6AvqxhGeQSRSQQatFRT9jH35s3vN2iPrtz3b0
+";
+            services.home-assistant = {
+              enable = true;
+              # port = 8123;
+              extraComponents = [
+                "met"
+                "radio_browser"
+              ];
+              config = {
+                default_config = {};
+                frontend = { };
+                http = {
+                  use_x_forwarded_for = true;
+                  trusted_proxies = [
+                    "127.0.0.1"
+                    "::1"
+                  ];
+                };
+              };
+            };
+
+            # Fix for the following issue
+            # https://github.com/NixOS/nixpkgs/issues/154163
             nixpkgs.overlays = [
               (final: super: {
                 makeModulesClosure = x:
                   super.makeModulesClosure (x // { allowMissing = true; });
               })
             ];
+            # endfix
+            #
+            #
           })
         ];
       };
