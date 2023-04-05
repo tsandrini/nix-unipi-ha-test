@@ -67,7 +67,7 @@
         (let hosts = builtins.attrNames (builtins.readDir ./hosts);
         in lib.genAttrs hosts mkHost);
 
-      packages.aarch64-linux.hapi-iso = nixos-generators.nixosGenerate {
+      packages.x86_64-linux.hapi-iso = nixos-generators.nixosGenerate {
         system = "aarch64-linux";
         format = "sd-aarch64";
         modules = [
@@ -78,6 +78,12 @@
 
             system.stateVersion = "23.05";
           }
+        ];
+        specialArgs.overlays = [
+          (final: super: {
+            makeModulesClosure = x:
+              super.makeModulesClosure (x // { allowMissing = true; });
+          })
         ];
       };
     };
