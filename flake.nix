@@ -72,17 +72,18 @@
         format = "sd-aarch64";
         modules = [
           inputs.nixos-hardware.nixosModules.raspberry-pi-4
-          {
+          ({config, pkgs, ...}: {
             sdImage.compressImage = false;
             sdImage.firmwareSize = 2048;
 
             system.stateVersion = "23.05";
-          }
-        ];
-        specialArgs.overlays = [
-          (final: super: {
-            makeModulesClosure = x:
-              super.makeModulesClosure (x // { allowMissing = true; });
+
+            nixpkgs.overlays = [
+              (final: super: {
+                makeModulesClosure = x:
+                  super.makeModulesClosure (x // { allowMissing = true; });
+              })
+            ];
           })
         ];
       };
