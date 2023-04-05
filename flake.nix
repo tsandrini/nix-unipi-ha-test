@@ -17,7 +17,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-generators, ... }@inputs:
     let
       user = "tsandrini";
       lib = nixpkgs.lib;
@@ -67,5 +67,18 @@
         (let hosts = builtins.attrNames (builtins.readDir ./hosts);
         in lib.genAttrs hosts mkHost);
 
+      packages.aarch64-linux.hapi-iso = nixos-generators.nixosGenerate {
+        system = "aarch64-linux";
+        format = "sd-aarch64";
+        modules = [
+          inputs.nixos-hardware.nixosModules.raspberry-pi-4
+          {
+            sdImage.compressImage = false;
+            sdImage.firmwareSize = 2048;
+
+            system.stateVersion = "23.05";
+          }
+        ];
+      };
     };
 }
