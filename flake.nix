@@ -79,7 +79,7 @@
 
             system.stateVersion = "23.05";
 
-            users.users.root.hashedPassword = "$6$7xwkdwWxSmBb5FYb$ZXtCEptSRyn8OWFBsOuT7tpw6UuJTq2MSE2RNEkjUoKZn0FBJ6AvqxhGeQSRSQQatFRT9jH35s3vN2iPrtz3b0";
+            users.users.root.hashedPassword = "$6$y4YHckhbQeRqtREj$qf/D61Tn4KZnd4RTznXccm9JC1Qj9TWnLVHW6U59LRwKfoO3MBUHuBj7LLVBC.m5WScUvp88EgVz2/4qFyZ.o.";
             services.getty.autologinUser = "root";
 
             services.openssh = {
@@ -87,6 +87,17 @@
               settings.PasswordAuthentication = true;
             };
             programs.ssh.startAgent = true;
+
+            time.timeZone = "Europe/Prague";
+            i18n.defaultLocale = "en_US.UTF-8";
+            networking.firewall.enable = false;
+            networking.networkmanager.enable = true;
+
+            console = {
+              enable = true;
+              useXkbConfig = true;
+              font = "ter-132n";
+            };
 
             services.home-assistant = {
               enable = true;
