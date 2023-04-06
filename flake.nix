@@ -75,7 +75,7 @@
           ({config, pkgs, ...}: {
 
             sdImage.compressImage = false;
-            sdImage.firmwareSize = 2048;
+            sdImage.firmwareSize = 1024;
 
             system.stateVersion = "23.05";
 
@@ -85,6 +85,8 @@
             services.openssh = {
               enable = true;
               settings.PasswordAuthentication = true;
+              settings.PermitRootLogin = "yes"; # testing only
+              banner = "Helouuuu";
             };
             programs.ssh.startAgent = true;
 
@@ -108,7 +110,33 @@
               config = {
                 default_config = {};
                 frontend = { };
+                http = {
+                  use_x_forwarded_for = true;
+                  trusted_proxies = [
+                    "127.0.0.1"
+                    "::1"
+                    "10.0.0.0/24"
+                    "192.168.33.0/24"
+                  ];
+                };
               };
+              package = (pkgs.home-assistant.override {
+                extraPackages = py: with py; [ psycopg2 ];
+              }).overrideAttrs (oldAttrs: {
+                doInstallCheck = false;
+              });
+              config.recorder.db_url = "postgresql://@/hass";
+            };
+
+            services.postgresql = {
+              enable = true;
+              ensureDatabases = [ "hass" ];
+              ensureUsers = [{
+                name = "hass";
+                ensurePermissions = {
+                  "DATABASE hass" = "ALL PRIVILEGES";
+                };
+              }];
             };
 
             # Fix for the following issue
