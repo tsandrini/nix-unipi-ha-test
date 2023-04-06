@@ -74,11 +74,33 @@
           inputs.nixos-hardware.nixosModules.raspberry-pi-4
           ({config, pkgs, ...}: {
 
+            # -------------
+            # | IMAGE MOD |
+            # -------------
             sdImage.compressImage = false;
             sdImage.firmwareSize = 1024;
 
             system.stateVersion = "23.05";
 
+            # ------------
+            # | SYS PKGS |
+            # ------------
+            environment.systemPackages = with pkgs; [
+              git
+              htop
+              btop
+              wget
+              curl
+              killall
+              openssl
+              vim
+            ];
+
+            # ------
+            # | SYS |
+            # -------
+            nixpkgs.config.allowUnfree = true;
+            networking.hostName = "hapi";
             users.users.root.hashedPassword = "$6$y4YHckhbQeRqtREj$qf/D61Tn4KZnd4RTznXccm9JC1Qj9TWnLVHW6U59LRwKfoO3MBUHuBj7LLVBC.m5WScUvp88EgVz2/4qFyZ.o.";
             services.getty.autologinUser = "root";
 
@@ -86,7 +108,6 @@
               enable = true;
               settings.PasswordAuthentication = true;
               settings.PermitRootLogin = "yes"; # testing only
-              banner = "Helouuuu";
             };
             programs.ssh.startAgent = true;
 
@@ -101,6 +122,40 @@
               font = "ter-132n";
             };
 
+            # ------
+            # | SYS |
+            # -------
+            system.autoUpgrade = {
+              enable = true;
+              # flake  = "github:tsandrini/nix-unipi-ha-test#hapi";
+              channel = "https://nixos.org/channels/nixos-unstable";
+              allowReboot = true;
+              randomizedDelaySec = "5m";
+              rebootWindow = {
+                lower = "02:00";
+                upper = "03:00";
+              };
+            };
+
+            nix = {
+              gc = {
+                automatic = true;
+                dates = "weekly";
+                options = "--delete-older-than 3d";
+              };
+              package = pkgs.nixVersions.unstable;
+              registry.nixpkgs.flake = inputs.nixpkgs;
+              settings.auto-optimise-store = true;
+              extraOptions = lib.mkBefore ''
+                experimental-features = nix-command flakes
+                keep-outputs          = true
+                keep-derivations      = true
+              '';
+            };
+
+            # ------------------
+            # | HOME ASSISTANT |
+            # ------------------
             services.home-assistant = {
               enable = true;
               extraComponents = [
@@ -137,6 +192,12 @@
                   "DATABASE hass" = "ALL PRIVILEGES";
                 };
               }];
+            };
+
+            services.node-red = {
+              enable = true;
+              port = 1880;
+              openFirewall = true;
             };
 
             # Fix for the following issue
